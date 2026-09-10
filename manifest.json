@@ -8,7 +8,13 @@
   "content_scripts": [
     {
       "matches": ["https://www.jumpinto.com/ielts/practice/*"],
-      "js": ["src/lib/api.js", "src/lib/randomize.js", "src/content/index.js"],
+      "js": [
+        "src/lib/api.js",
+        "src/lib/randomize.js",
+        "src/lib/actions.js",
+        "src/content/index.js",
+        "src/content/catalogue.js"
+      ],
       "css": ["src/content/panel.css"],
       "run_at": "document_idle"
     }

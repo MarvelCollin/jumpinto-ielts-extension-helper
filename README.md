@@ -39,6 +39,22 @@ Every action asks for confirmation, snapshots your current answers to
 `chrome.storage.local`, writes the change, then reloads the page so the site picks up the
 new state.
 
+### On the test list
+
+You do not have to open a test first. On the practice list page, every **Listening** and
+**Reading** link gets a pair of small buttons:
+
+```
+Listening  [Clear] [Random]
+Reading    [Clear] [Random]
+Writing
+Speaking
+```
+
+Each one covers the whole section for that test, so **Clear** next to Reading empties parts
+1 to 3 in a single click. Writing and Speaking are left alone because they use different
+endpoints. Undo lives in the panel inside the test.
+
 Clearing genuinely works. An empty string is a value the server accepts and stores, so
 Randomize is only there if you would rather sit down to a filled in but wrong answer sheet.
 
@@ -106,8 +122,10 @@ manifest.json            MV3 manifest and content script registration
 src/
   lib/api.js             endpoint wrappers and practice URL parsing
   lib/randomize.js       per question type value generator
-  content/index.js       panel UI, confirmation, snapshot, undo
-  content/panel.css      panel styles
+  lib/actions.js         read, merge, write and undo across a set of parts
+  content/index.js       in test panel
+  content/catalogue.js   per section buttons on the test list
+  content/panel.css      styles for both
 tools/recon/             one off console scripts used to map the site
 ```
 
