@@ -141,7 +141,7 @@
     });
 
     trigger.dataset.id = String(Math.random()).slice(2);
-    card.append(el('div', { className: 'jp-card-actions' }, [trigger]));
+    return el('div', { className: 'jp-card-actions' }, [trigger]);
   }
 
   function decorate() {
@@ -150,7 +150,10 @@
       const card = cardFor(group.anchors);
       if (!card || mounted.has(card)) continue;
       mounted.add(card);
-      mount(card, group.sections);
+
+      const anchor = group.anchors[group.anchors.length - 1];
+      const row = anchor.parentElement === card ? anchor : anchor.parentElement;
+      row.after(mount(card, group.sections));
     }
   }
 
