@@ -29,6 +29,18 @@ Every action asks for confirmation first, snapshots the current answers to
 Clearing works — `""` is a value the server accepts and stores, so Randomize is only there
 if you'd rather have a filled-in-but-wrong sheet.
 
+## Project layout
+
+```
+manifest.json          MV3 manifest, content script registration
+src/lib/api.js         endpoint wrappers, practice URL parsing
+src/lib/randomize.js   per question type value generator
+src/content/index.js   panel UI, confirm, snapshot, undo
+src/content/panel.css  panel styles
+docs/api-findings.md   endpoints, parameters, answer encoding
+tools/recon/           one off console scripts used to map the site
+```
+
 ## Scope
 
 Listening and Reading only. Writing and Speaking use different endpoints and are not
@@ -37,11 +49,19 @@ handled.
 ## How it works
 
 The site stores answers server-side. Everything runs through its own API from inside your
-already-authenticated tab — see [recon/FINDINGS.md](recon/FINDINGS.md) for endpoints,
+already-authenticated tab — see [docs/api-findings.md](docs/api-findings.md) for endpoints,
 parameter shapes and answer encoding per question type.
 
 One thing to be careful about: `submit-answer-by-task` **replaces the entire answer map for
 a part**, so the extension always reads the existing answers and merges before saving.
+
+## Verified behaviour
+
+Tested against IELTS 13 / Test 1 / Reading on a live account:
+
+* Randomize part → all 13 answers written server-side, correct format per question type
+* Clear all reading → parts 1-3 emptied in one action
+* Undo last → restored the pre-change answers byte for byte, in both cases
 
 ## Security note
 
@@ -50,3 +70,7 @@ Do **not** paste session cookies anywhere. The `SID` / `HSID` / `SSID` / `APISID
 account takeover — they bypass both password and 2FA. They are also useless for this
 project: the extension runs inside your own already-authenticated browser tab, so it
 inherits your session automatically and never needs to handle a cookie value.
+
+## License
+
+MIT
