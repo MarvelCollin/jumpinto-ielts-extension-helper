@@ -1,3 +1,14 @@
+.jp-reset-panel,
+.jp-card-actions,
+.jp-menu {
+  --jp-font: 12px/1.4 system-ui, -apple-system, Segoe UI, sans-serif;
+  --jp-border: rgba(0, 0, 0, 0.14);
+  --jp-surface: #f7f7f8;
+  --jp-surface-hover: #ededf0;
+  --jp-text: #111;
+  --jp-muted: #666;
+}
+
 .jp-reset-panel {
   position: fixed;
   right: 16px;
@@ -9,8 +20,8 @@
   border-radius: 10px;
   background: #fff;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.16);
-  font: 12px/1.4 system-ui, -apple-system, Segoe UI, sans-serif;
-  color: #111;
+  font: var(--jp-font);
+  color: var(--jp-text);
 }
 
 .jp-reset-head {
@@ -36,7 +47,7 @@
 
 .jp-reset-status {
   margin: 6px 0 8px;
-  color: #666;
+  color: var(--jp-muted);
   word-break: break-word;
 }
 
@@ -53,21 +64,28 @@
   gap: 6px;
 }
 
-.jp-reset-buttons button {
+.jp-reset-buttons button,
+.jp-card-button,
+.jp-menu-item {
   padding: 6px 8px;
-  border: 1px solid rgba(0, 0, 0, 0.14);
+  border: 1px solid var(--jp-border);
   border-radius: 6px;
-  background: #f7f7f8;
+  background: var(--jp-surface);
+  color: var(--jp-text);
   cursor: pointer;
-  font: inherit;
+  font: var(--jp-font);
   text-align: left;
 }
 
-.jp-reset-buttons button:hover:not(:disabled) {
-  background: #ededf0;
+.jp-reset-buttons button:hover:not(:disabled),
+.jp-card-button:hover:not(:disabled),
+.jp-menu-item:hover:not(:disabled) {
+  background: var(--jp-surface-hover);
 }
 
-.jp-reset-buttons button:disabled {
+.jp-reset-buttons button:disabled,
+.jp-card-button:disabled,
+.jp-menu-item:disabled {
   opacity: 0.5;
   cursor: default;
 }
@@ -82,30 +100,48 @@
   display: none;
 }
 
-.jp-row-actions {
-  display: inline-flex;
+.jp-card-actions {
+  margin-top: 10px;
+}
+
+.jp-card-button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  color: var(--jp-muted);
+}
+
+.jp-card-button:hover:not(:disabled) {
+  color: var(--jp-text);
+}
+
+.jp-menu {
+  position: fixed;
+  z-index: 2147483001;
+  display: grid;
   gap: 4px;
-  margin-left: 8px;
-  vertical-align: middle;
+  padding: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.16);
+  font: var(--jp-font);
 }
 
-.jp-row-button {
-  padding: 1px 6px;
-  border: 1px solid rgba(0, 0, 0, 0.16);
-  border-radius: 999px;
-  background: #f4f4f6;
-  color: #444;
-  cursor: pointer;
-  font: 500 10px/1.6 system-ui, -apple-system, Segoe UI, sans-serif;
-  letter-spacing: 0.02em;
+.jp-menu-item {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  border-color: transparent;
 }
 
-.jp-row-button:hover:not(:disabled) {
-  background: #e6e6ea;
-  color: #111;
+.jp-menu-item:hover:not(:disabled) {
+  background: var(--jp-surface-hover);
 }
 
-.jp-row-button:disabled {
-  opacity: 0.5;
-  cursor: default;
+.jp-menu-strong {
+  border-top: 1px solid var(--jp-border);
+  border-radius: 0 0 6px 6px;
+  font-weight: 600;
 }
