@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Jumpinto IELTS Answer Reset",
-  "description": "Clear or randomize your saved answers on jumpinto.com IELTS practice tests.",
+  "description": "Clear your saved answers on jumpinto.com IELTS practice tests.",
   "version": "1.0.0",
   "permissions": ["storage"],
   "host_permissions": ["https://www.jumpinto.com/*"],
@@ -10,7 +10,7 @@
       "matches": ["https://www.jumpinto.com/ielts/practice/*"],
       "js": [
         "src/lib/api.js",
-        "src/lib/randomize.js",
+        "src/lib/answers.js",
         "src/lib/actions.js",
         "src/content/index.js",
         "src/content/catalogue.js"

@@ -6,21 +6,19 @@ const JumpintoApi = (() => {
     reading: [1, 2, 3],
   };
 
-  function parseLocation(pathname = location.pathname) {
+  function parsePath(pathname) {
     const m = pathname.match(
       /^\/ielts\/practice\/([^/]+)\/([^/]+)\/([^/]+)\/([^/]+)(?:\/([^/]+))?/
     );
     if (!m) return null;
     const [, seriesType, seriesId, testId, testPart, taskPart] = m;
-    if (!PARTS[testPart]) return null;
-    return {
-      seriesType,
-      seriesId,
-      testId,
-      testPart,
-      taskPart: Number(taskPart) || 1,
-      taskParts: PARTS[testPart],
-    };
+    return { seriesType, seriesId, testId, testPart, taskPart: Number(taskPart) || 1 };
+  }
+
+  function parseLocation(pathname = location.pathname) {
+    const raw = parsePath(pathname);
+    if (!raw || !PARTS[raw.testPart]) return null;
+    return Object.assign({}, raw, { taskParts: PARTS[raw.testPart] });
   }
 
   function query(ctx, taskPart, extra = {}) {
@@ -57,5 +55,5 @@ const JumpintoApi = (() => {
       query(ctx, taskPart, { user_answer: JSON.stringify(answers) })
     );
 
-  return { PARTS, parseLocation, getAnswers, getQuestions, putAnswers };
+  return { PARTS, parsePath, parseLocation, getAnswers, getQuestions, putAnswers };
 })();

@@ -3,7 +3,7 @@ const JumpintoActions = (() => {
 
   const noop = () => {};
 
-  async function apply(ctx, mode, parts, onStatus = noop) {
+  async function clear(ctx, parts, onStatus = noop) {
     const snapshot = { ts: Date.now(), ctx, parts: [] };
 
     for (const part of parts) {
@@ -14,7 +14,7 @@ const JumpintoActions = (() => {
       ]);
       snapshot.parts.push({ taskPart: part, answers: existing || {} });
 
-      const generated = JumpintoRandomize.buildAnswers(blocks, mode);
+      const generated = JumpintoAnswers.buildCleared(blocks);
       onStatus('Saving part ' + part);
       await JumpintoApi.putAnswers(ctx, part, Object.assign({}, existing, generated));
     }
@@ -56,5 +56,5 @@ const JumpintoActions = (() => {
     return `IELTS ${ctx.seriesId} test ${ctx.testId} ${ctx.testPart}`;
   }
 
-  return { UNDO_KEY, apply, undo, readSnapshot, coversSameTest, describe };
+  return { UNDO_KEY, clear, undo, readSnapshot, coversSameTest, describe };
 })();

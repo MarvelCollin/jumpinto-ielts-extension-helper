@@ -4,11 +4,38 @@
 ![No build step](https://img.shields.io/badge/build-none-success)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-A Chrome/Edge/Brave extension that adds **Clear** and **Randomize** buttons to
+A Chrome/Edge/Brave extension that wipes your saved answers on
 [jumpinto.com](https://www.jumpinto.com/ielts/practice/academic/) IELTS practice tests.
 
 Jumpinto keeps your answers on its own server, so reopening a test you already did shows
 the old attempt filled in. There is no built in reset. This puts one on the page.
+
+## Features
+
+### On the test list
+
+One button per test card, with a dropdown, so you can reset a test without opening it.
+
+```
+┌──────────────────┐
+│ Test 2           │
+│ Listening        │      ┌──────────────────┐
+│ Reading          │      │ Clear Listening  │
+│ Writing          │      │ Clear Reading    │
+│ Speaking         │      ├──────────────────┤
+│ [ Clear answers ]│─────▶│ Clear whole test │
+└──────────────────┘      └──────────────────┘
+```
+
+| Item | What it clears |
+| --- | --- |
+| **Clear Listening** | All 4 listening parts of that test |
+| **Clear Reading** | All 3 reading parts of that test |
+| **Clear whole test** | Both sections, 7 parts |
+
+Writing and Speaking are left alone, they use different endpoints.
+
+### Inside a test
 
 ```
 ┌──────────────────────────────┐
@@ -17,46 +44,22 @@ the old attempt filled in. There is no built in reset. This puts one on the page
 │ ┌──────────────────────────┐ │
 │ │ Clear part 1             │ │
 │ │ Clear all reading        │ │
-│ │ Randomize part 1         │ │
-│ │ Randomize all reading    │ │
 │ ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┤ │
 │ │ Undo last                │ │
 │ └──────────────────────────┘ │
 └──────────────────────────────┘
 ```
 
-## Features
-
-| Button | What it does |
-| --- | --- |
-| **Clear part N** | Empties every answer in the part you are looking at |
-| **Clear all reading / listening** | Same, across the whole section (reading 1-3, listening 1-4) |
-| **Randomize part N** | Fills every question with a valid random value for its type |
-| **Randomize all …** | Same, across the whole section |
-| **Undo last** | Puts back the answers as they were before the last action |
+**Undo last** puts back the answers as they were before the last clear, wherever that clear
+was triggered from.
 
 Every action asks for confirmation, snapshots your current answers to
 `chrome.storage.local`, writes the change, then reloads the page so the site picks up the
 new state.
 
-### On the test list
-
-You do not have to open a test first. On the practice list page, every **Listening** and
-**Reading** link gets a pair of small buttons:
-
-```
-Listening  [Clear] [Random]
-Reading    [Clear] [Random]
-Writing
-Speaking
-```
-
-Each one covers the whole section for that test, so **Clear** next to Reading empties parts
-1 to 3 in a single click. Writing and Speaking are left alone because they use different
-endpoints. Undo lives in the panel inside the test.
-
-Clearing genuinely works. An empty string is a value the server accepts and stores, so
-Randomize is only there if you would rather sit down to a filled in but wrong answer sheet.
+Clearing genuinely works for every question type on the site: an empty string, or an empty
+array for the multi select ones, is a value the server accepts and stores. There is no need
+to fall back on filling questions with junk.
 
 ## Install
 
@@ -121,10 +124,10 @@ Unknown types are skipped rather than filled with something the UI cannot render
 manifest.json            MV3 manifest and content script registration
 src/
   lib/api.js             endpoint wrappers and practice URL parsing
-  lib/randomize.js       per question type value generator
+  lib/answers.js         per question type empty value builder
   lib/actions.js         read, merge, write and undo across a set of parts
   content/index.js       in test panel
-  content/catalogue.js   per section buttons on the test list
+  content/catalogue.js   per test dropdown on the test list
   content/panel.css      styles for both
 tools/recon/             one off console scripts used to map the site
 ```
@@ -140,18 +143,27 @@ to compile.
 Syntax check before committing:
 
 ```bash
-node --check src/lib/api.js && node --check src/lib/randomize.js && node --check src/content/index.js
+node --check src/lib/api.js && node --check src/lib/answers.js && node --check src/lib/actions.js && node --check src/content/index.js && node --check src/content/catalogue.js
 ```
 
 ## Verified behaviour
 
-Tested against IELTS 13 / Test 1 / Reading on a live logged in account:
+Against a live logged in account, IELTS 13 / Test 1:
 
-* **Randomize part** wrote all 13 answers server side, each in the right format for its
-  question type, and they rendered correctly after the reload
-* **Clear all reading** emptied parts 1, 2 and 3 in a single action
-* **Undo last** restored the previous answers exactly in both cases, including roman
-  numerals and letter choices
+* **Clear all reading** emptied parts 1, 2 and 3 in one action
+* **Undo last** restored the previous answers byte for byte, including roman numerals and
+  letter choices
+* On a listening part with multi select questions, cleared answers round tripped correctly
+  and the reloaded page showed nothing ticked
+
+Across the whole catalogue, 23 books, 672 parts, 7,688 questions:
+
+* every question in every part produces a valid empty value
+* all 18 question types are handled, none skipped
+
+On the list page, checked against a local fixture: one button per card, contained inside the
+card, dropdown listing only the sections that card actually has, and answers outside the
+question blocks preserved by the merge.
 
 ## Limitations
 

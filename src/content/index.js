@@ -24,22 +24,21 @@
     for (const b of buttons.querySelectorAll('button')) b.disabled = value;
   }
 
-  async function apply(mode, scope) {
+  async function apply(scope) {
     const parts = scope === 'part' ? [ctx.taskPart] : ctx.taskParts;
-    const verb = mode === 'clear' ? 'Clear' : 'Randomize';
     const where =
       scope === 'part'
         ? `${ctx.testPart} part ${ctx.taskPart}`
         : `all ${ctx.taskParts.length} ${ctx.testPart} parts`;
 
-    if (!confirm(`${verb} your saved answers for ${where}?\n\nThis overwrites them on the server. Use "Undo last" to put them back.`)) {
+    if (!confirm(`Clear your saved answers for ${where}?\n\nThis overwrites them on the server. Use "Undo last" to put them back.`)) {
       return;
     }
 
     setBusy(true);
     try {
-      await JumpintoActions.apply(ctx, mode, parts, setStatus);
-      setStatus(`${verb} done. Reloading…`, 'ok');
+      await JumpintoActions.clear(ctx, parts, setStatus);
+      setStatus('Cleared. Reloading…', 'ok');
       setTimeout(() => location.reload(), 700);
     } catch (err) {
       setStatus(String(err.message || err), 'err');
@@ -63,19 +62,11 @@
     buttons.replaceChildren(
       el('button', {
         textContent: `Clear part ${ctx.taskPart}`,
-        onclick: () => apply('clear', 'part'),
+        onclick: () => apply('part'),
       }),
       el('button', {
         textContent: `Clear all ${ctx.testPart}`,
-        onclick: () => apply('clear', 'section'),
-      }),
-      el('button', {
-        textContent: `Randomize part ${ctx.taskPart}`,
-        onclick: () => apply('random', 'part'),
-      }),
-      el('button', {
-        textContent: `Randomize all ${ctx.testPart}`,
-        onclick: () => apply('random', 'section'),
+        onclick: () => apply('section'),
       }),
       el('button', { textContent: 'Undo last', className: 'jp-reset-undo', onclick: undo })
     );
