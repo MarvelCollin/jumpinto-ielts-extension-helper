@@ -1,5 +1,4 @@
 (() => {
-  const UNDO_KEY = 'jumpinto-last-snapshot';
   let ctx = null;
   let busy = false;
 
@@ -27,37 +26,20 @@
 
   async function apply(mode, scope) {
     const parts = scope === 'part' ? [ctx.taskPart] : ctx.taskParts;
-    const label = mode === 'clear' ? 'Clear' : 'Randomize';
+    const verb = mode === 'clear' ? 'Clear' : 'Randomize';
     const where =
       scope === 'part'
         ? `${ctx.testPart} part ${ctx.taskPart}`
         : `all ${ctx.taskParts.length} ${ctx.testPart} parts`;
 
-    if (!confirm(`${label} your saved answers for ${where}?\n\nThis overwrites them on the server. Use "Undo last" to put them back.`)) {
+    if (!confirm(`${verb} your saved answers for ${where}?\n\nThis overwrites them on the server. Use "Undo last" to put them back.`)) {
       return;
     }
 
     setBusy(true);
-    const snapshot = { ts: Date.now(), ctx, parts: [] };
-
     try {
-      for (const part of parts) {
-        setStatus(`Reading part ${part}…`);
-        const [existing, blocks] = await Promise.all([
-          JumpintoApi.getAnswers(ctx, part),
-          JumpintoApi.getQuestions(ctx, part),
-        ]);
-        snapshot.parts.push({ taskPart: part, answers: existing || {} });
-
-        const generated = JumpintoRandomize.buildAnswers(blocks, mode);
-        const merged = Object.assign({}, existing, generated);
-
-        setStatus(`Saving part ${part}…`);
-        await JumpintoApi.putAnswers(ctx, part, merged);
-      }
-
-      await chrome.storage.local.set({ [UNDO_KEY]: snapshot });
-      setStatus(`${label} done. Reloading…`, 'ok');
+      await JumpintoActions.apply(ctx, mode, parts, setStatus);
+      setStatus(`${verb} done. Reloading…`, 'ok');
       setTimeout(() => location.reload(), 700);
     } catch (err) {
       setStatus(String(err.message || err), 'err');
@@ -66,28 +48,9 @@
   }
 
   async function undo() {
-    const stored = await chrome.storage.local.get(UNDO_KEY);
-    const snapshot = stored[UNDO_KEY];
-    if (!snapshot) {
-      setStatus('Nothing to undo.', 'err');
-      return;
-    }
-    const sameTest =
-      snapshot.ctx.seriesId === ctx.seriesId &&
-      snapshot.ctx.testId === ctx.testId &&
-      snapshot.ctx.testPart === ctx.testPart;
-    if (!sameTest) {
-      setStatus('Last change was on a different test.', 'err');
-      return;
-    }
-
     setBusy(true);
     try {
-      for (const { taskPart, answers } of snapshot.parts) {
-        setStatus(`Restoring part ${taskPart}…`);
-        await JumpintoApi.putAnswers(ctx, taskPart, answers);
-      }
-      await chrome.storage.local.remove(UNDO_KEY);
+      await JumpintoActions.undo(ctx, setStatus);
       setStatus('Restored. Reloading…', 'ok');
       setTimeout(() => location.reload(), 700);
     } catch (err) {
