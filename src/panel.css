@@ -1,0 +1,83 @@
+.jp-reset-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483000;
+  width: 210px;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.16);
+  font: 12px/1.4 system-ui, -apple-system, Segoe UI, sans-serif;
+  color: #111;
+}
+
+.jp-reset-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jp-reset-title {
+  font-weight: 600;
+}
+
+.jp-reset-toggle {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.jp-reset-status {
+  margin: 6px 0 8px;
+  color: #666;
+  word-break: break-word;
+}
+
+.jp-reset-status.ok {
+  color: #0a7d3c;
+}
+
+.jp-reset-status.err {
+  color: #c0271a;
+}
+
+.jp-reset-buttons {
+  display: grid;
+  gap: 6px;
+}
+
+.jp-reset-buttons button {
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 6px;
+  background: #f7f7f8;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.jp-reset-buttons button:hover:not(:disabled) {
+  background: #ededf0;
+}
+
+.jp-reset-buttons button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.jp-reset-undo {
+  margin-top: 2px;
+  border-style: dashed !important;
+}
+
+.jp-collapsed .jp-reset-status,
+.jp-collapsed .jp-reset-buttons {
+  display: none;
+}
