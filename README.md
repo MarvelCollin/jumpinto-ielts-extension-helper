@@ -80,12 +80,22 @@ Values are encoded per question type:
 
 | Question type | Stored value |
 | --- | --- |
-| `input-table`, `input-summary` | free text, e.g. `focus` |
+| `input-answer`, `input-diagram`, `input-flowchart`, `input-form`, `input-note`, `input-sentence`, `input-summary`, `input-table` | free text, e.g. `focus` |
 | `option-true-false` | `TRUE` / `FALSE` / `NOT GIVEN` |
 | `option-yes-no` | `YES` / `NO` / `NOT GIVEN` |
-| `option-abc` | letter, index into that question's options |
-| `select-given-list`, `select-given-diagram` | letter, index into the shared list |
+| `option-abc` | a single letter |
+| `select-given-list`, `select-given-diagram`, `select-summary-given-list`, `select-flowchart-given-list`, `select-section` | a single letter |
 | `select-section-given-list` | lowercase roman numeral, e.g. `vii` |
+| `checkbox` | an **array** of letters, e.g. `["A","D"]`, repeated on every question number the block covers |
+
+Two details that are easy to get wrong:
+
+* A `checkbox` block covers more than one question number, because "choose TWO letters"
+  is scored as two answers. The same array is stored under each of them, and its empty
+  value is `[]`, not `""`.
+* `desc.optionRange` is usually letters like `["A","G"]`, but it is sometimes roman, as in
+  `["i","vi"]`, even for a `select-given-list`. The range decides the alphabet, not the
+  question type.
 
 Unknown types are skipped rather than filled with something the UI cannot render.
 
