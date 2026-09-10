@@ -81,3 +81,31 @@
 .jp-collapsed .jp-reset-buttons {
   display: none;
 }
+
+.jp-row-actions {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.jp-row-button {
+  padding: 1px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 999px;
+  background: #f4f4f6;
+  color: #444;
+  cursor: pointer;
+  font: 500 10px/1.6 system-ui, -apple-system, Segoe UI, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.jp-row-button:hover:not(:disabled) {
+  background: #e6e6ea;
+  color: #111;
+}
+
+.jp-row-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
