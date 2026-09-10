@@ -57,13 +57,5 @@ const JumpintoApi = (() => {
       query(ctx, taskPart, { user_answer: JSON.stringify(answers) })
     );
 
-  function questionNumbers(blocks) {
-    const nums = [];
-    for (const b of blocks) {
-      for (let n = Number(b.start); n <= Number(b.end); n++) nums.push(String(n));
-    }
-    return nums;
-  }
-
-  return { PARTS, parseLocation, getAnswers, getQuestions, putAnswers, questionNumbers };
+  return { PARTS, parseLocation, getAnswers, getQuestions, putAnswers };
 })();
