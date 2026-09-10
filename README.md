@@ -89,9 +89,6 @@ Values are encoded per question type:
 
 Unknown types are skipped rather than filled with something the UI cannot render.
 
-Full notes, including request and response shapes, are in
-[docs/api-findings.md](docs/api-findings.md).
-
 ## Project structure
 
 ```
@@ -101,7 +98,6 @@ src/
   lib/randomize.js       per question type value generator
   content/index.js       panel UI, confirmation, snapshot, undo
   content/panel.css      panel styles
-docs/api-findings.md     endpoints, parameters, answer encoding
 tools/recon/             one off console scripts used to map the site
 ```
 
